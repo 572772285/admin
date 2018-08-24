@@ -1,0 +1,12 @@
+.login-forms{
+	background-color: rgba(0, 0, 0, 0.5);
+	margin: 150px auto;
+	width: 300px;
+	height: 400px;
+	border-radius: 10px;
+	box-shadow: 0,5px,5px;
+	padding: 20px;
+}
+.login-form-button{
+	width: 100%;
+}
