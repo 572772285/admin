@@ -1,36 +1,29 @@
 import React from 'react';
 import { Form, Icon, Input, Button } from 'antd';
 import './index.css';
+import { connect } from 'react-redux';
 //引入Ajax插件
-import axios from 'axios';
+
+import { actionCreater } from './store/index.js'
 const FormItem = Form.Item;
 
 class NormalLoginForm extends React.Component {
 	constructor(props){
 		super(props)
 		this.handleSubmit=this.handleSubmit.bind(this)
+    this.state={
+      isFetching:false
+    }
 	}
   handleSubmit(e){
     e.preventDefault();
-    this.props.form.validateFields((err, values) => {
+    this.props.form.validateFields((err,values) => {
       if (!err) {
-        // console.log('Received values of form: ', values);
-        axios({
-            method: 'post',
-            url: 'http://127.0.0.1:3001/admin/login',
-            data:values
-          })
-          .then((resault)=>{
-            console.log(resault)
-          })
-          .catch((err)=>{
-            console.log(err)
-          })
-            }
-          });
+          this.props.handleInit(values)
         }
-
-  render() {
+      })
+  }
+  render(){
     const { getFieldDecorator } = this.props.form;
     return (
     <div className="login-forms">
@@ -50,7 +43,11 @@ class NormalLoginForm extends React.Component {
           )}
         </FormItem>
         <FormItem>
-          <Button type="primary" onClick={this.handleSubmit} className="login-form-button">
+          <Button type="primary" 
+          onClick={this.handleSubmit}
+           className="login-form-button"
+           loading={this.props.isFetching}
+            >
             登陆
           </Button>
         </FormItem>
@@ -59,5 +56,18 @@ class NormalLoginForm extends React.Component {
     );
   }
 }
-
-export default Form.create()(NormalLoginForm);
+const mapStateToProps=(state)=>{
+  return {
+    isFetching:state.get('login').get('isFetching')
+  }
+}
+const mapDispatchToProps=(dispatch)=>{
+  return {
+    handleInit(values){
+      const action=actionCreater.getLoginaction(values)
+      dispatch(action)
+    }
+  }
+}
+const login=Form.create()(NormalLoginForm)
+export default connect(mapStateToProps,mapDispatchToProps)(login);

@@ -1,0 +1,11 @@
+.Header .logo{
+	  margin: 16px 28px 16px 0;
+	  float: left;
+	  color: red;
+	  font-size: 40px;
+	  line-height: 40px;
+}
+.dropDown{
+	position: absolute;
+	right:20px;
+}
