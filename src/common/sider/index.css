@@ -1,3 +1,11 @@
-.ant-menu-item ant-menu-item-selected{
-	background: #fff;
+.Sider a.active{
+	color: #1890ff;
+}
+ 
+.Sider  .ant-menu-item-selected {
+    background-color:transparent !important;
+    /*color: transparent !important;*/
+}
+.Sider  .ant-menu-item-selected:after{
+	border-right: none !important;
 }

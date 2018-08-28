@@ -12,7 +12,7 @@ import Login from './pages/login/index.js'
 import Home from './pages/home/index.js'
 import User from './pages/user/index.js'
 import Shop from './pages/shop/index.js'
-import Class from './pages/class/index.js'
+import Category from './pages/category/index.js'
 import { getUserName } from './until/index.js'
 import  ErrorPage from './pages/errorPage/index.js'
 class App extends React.Component{
@@ -43,7 +43,7 @@ class App extends React.Component{
           <ProtectedRouter exact path="/" component={ Home }/>
           <ProtectedRouter path="/user" component={ User }/>
           <ProtectedRouter path="/shop" component={ Shop }/>
-          <ProtectedRouter path="/class" component={ Class }/>
+          <ProtectedRouter path="/category" component={ Category }/>
           <LoginRouter path="/login" component={ Login }/>
           <Route component={ ErrorPage } />
     		</Switch>

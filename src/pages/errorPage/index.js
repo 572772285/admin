@@ -1,5 +1,4 @@
 import React,{ Component } from 'react';
-import Mylayout from '../../common/layout/layout.js'
 import { Link } from 'react-router-dom';
 class ErrorPage extends Component{
 
