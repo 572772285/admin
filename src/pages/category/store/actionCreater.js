@@ -117,3 +117,12 @@ export const getPageAction=(pid,page)=>{
            
   }
 }
+export const getShowUpdateModalAction = (updateId,updateName)=>{
+  return {
+    type:types.SHOW_UPDATE_MODAL,
+    payload:{
+      updateId,
+      updateName
+    }
+  }
+}

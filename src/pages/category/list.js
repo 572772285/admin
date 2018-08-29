@@ -1,41 +1,13 @@
 import React,{ Component } from 'react';
 import Mylayout from '../../common/layout/layout.js'
-import { Breadcrumb ,Button,Table,Divider,InputNumber } from 'antd';
+import { Breadcrumb ,Button,Table,Divider,InputNumber,Modal } from 'antd';
 import { connect } from 'react-redux';
 import { actionCreater } from './store/index.js'
 import {
   Link
 } from 'react-router-dom';
 
-const columns = [
-{
-  title: 'ID',
-  dataIndex: 'id',
-  key: 'id'
-}, 
-{
-  title: '分类名称',
-  dataIndex: 'name',
-  key: 'name'
-}, 
-{
-  title: '排序',
-  dataIndex: 'order',
-  key: 'order',
-  
-},
-{
-  title: '操作',
-  key: 'action',
-  render: (text, record) => (
-    <span>
-      <a>更改分类 {record.name}</a>
-      <Divider type="vertical" />
-      <Link to={'/category/'+record.id}>查看子分类</Link>
-    </span>
-  ),
-}
-];
+
 class List extends Component{
 	constructor(props){
 		super(props);
@@ -49,18 +21,56 @@ class List extends Component{
 	}
 	//当数据更新时，生命周期函数执行componentDidUpdata
 	componentDidUpdate(preProps,preState){
-		console.log(preProps)
-		console.log(this.props)
+		//上一个
+		// console.log(preProps)
+		//当前
+		// console.log(this.props)
 		let oldPath=preProps.location.pathname
 		let newPath=this.props.location.pathname
 		if(oldPath!==newPath){
-			let newParams=this.props.match.params.pid
+			let newPid=this.props.match.params.pid||0
 			this.setState({
-				pid:newParams
+				pid:newPid
+			},()=>{
+				this.props.handlePage(newPid,1)
 			})
 		}
 	}
 	render(){
+		const columns = [
+		{
+		  title: 'ID',
+		  dataIndex: 'id',
+		  key: 'id'
+		}, 
+		{
+		  title: '分类名称',
+		  dataIndex: 'name',
+		  key: 'name'
+		}, 
+		{
+		  title: '排序',
+		  dataIndex: 'order',
+		  key: 'order',
+		  
+		},
+		{
+		  title: '操作',
+		  key: 'action',
+		  render: (text, record) => (//record是当前的意思
+		    <span>
+		      <a 
+		      onClick={()=>{
+		      	this.props.showUpdateModal(record.id,record.name)
+		      }
+		      }
+		      >更改分类</a>
+		      <Divider type="vertical" />
+		      <Link to={'/category/'+record.id}>查看子分类</Link>
+		    </span>
+		  )
+		}
+		];
 		const data=this.props.list.map((category)=>{
 	      return {
 	        key:category.get('_id'),
@@ -75,32 +85,41 @@ class List extends Component{
 				<Breadcrumb.Item>分类管理</Breadcrumb.Item>
 				<Breadcrumb.Item>添加分类</Breadcrumb.Item>
 				<div className="clearfix">
-					<h4 style={{ float:"left" }}>父类id:{ pid}</h4>
+					<h4 style={{ float:"left" }}>父类id:{ pid }</h4>
 					<Link to='/category/add'>
 			          <Button type="primary" style={{ float:"right" }}>添加</Button>
 			        </Link>
 				</div>
 		        	<Table 
-        dataSource={data}
-        columns={columns}
-        pagination={
-          {
-          	current:this.props.current,
-            defaultCurrent:this.props.current,
-            pageSize:this.props.pageSize,
-            total:this.props.total
-          }
-        } 
-        onChange={(pagination)=>{
-        	this.props.handlePage(pagination.current)
-        }}
-        loading={
-        	{
-        		spinning:this.props.isPageFetching,
-        		tip:'小阳正在努力为你加载中'
-	       	}
-        }
-        />
+			        dataSource={data}
+			        columns={columns}
+			        pagination={
+			          {
+			          	current:this.props.current,
+			            defaultCurrent:this.props.current,
+			            pageSize:this.props.pageSize,
+			            total:this.props.total
+			          }
+			        } 
+			        onChange={(pagination)=>{
+			        	this.props.handlePage(pid,pagination.current)
+			        }}
+			        loading={
+			        	{
+			        		spinning:this.props.isPageFetching,
+			        		tip:'小阳正在努力为你加载中'
+				       	}
+			        }
+			        />
+			         <Button type="primary" onClick={this.showModal}>Open</Button>
+			        <Modal
+			          title="修改分类名称"
+			          visible={this.props.updateModelVisible}
+			          onOk={this.props.handleUpdateName}
+			          onCancel={this.props.handleCancelName}
+			        >
+			          <p>内容...</p>
+			        </Modal>
 			</Mylayout>
 
 		)
@@ -114,7 +133,8 @@ const mapStateToProps=(state)=>{
     current:state.get('category').get('current'),
     pageSize:state.get('category').get('pageSize'),
     total:state.get('category').get('total'),
-    list:state.get('category').get('list')
+    list:state.get('category').get('list'),
+    updateModelVisible:state.get('category').get('updateModelVisible')
   }
 }
 //把方法映射到组件的props上,这个函数要把dispatch方法穿进去
@@ -123,7 +143,10 @@ const mapDispatchToProps=(dispatch)=>{
     handlePage(pid,page){
       const action=actionCreater.getPageAction(pid,page)
       dispatch(action)
-    }
+    },
+    showUpdateModal:(updateId,updateName)=>{
+		dispatch(actionCreater.getShowUpdateModalAction(updateId,updateName));
+	}
   }
 }
 export default connect(mapStateToProps,mapDispatchToProps)(List);

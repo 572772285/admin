@@ -75,12 +75,13 @@ class CategoryAdd extends Component{
 				              required: true, message: '请选择父级分类!',
 				            }],
 				          })(
-				            <Select initialValue="0" style={{ width: 120 }}>
+				            <Select initialValue="0" style={{ width: 300 }}>
 						      <Option value="0">根分类</Option>
 						      {
-						      	this.props.setOneCategory.map((categories)=>{
-						      	return <Option key={categories.get('_id')} value={categories.get('_id')}>{categories.get('name')}</Option>
-						      })
+						      	this.props.setOneCategory.map((category)=>{
+						      		console.log(category)
+						      		return <Option key={category.get('_id')} value={category.get('_id')}>根分类/{category.get('name')}</Option>
+						      	})
 						      }
     						</Select>
 				          )}
