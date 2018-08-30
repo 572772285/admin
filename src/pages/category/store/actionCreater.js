@@ -58,7 +58,6 @@ export const getAddcatogoryAction=(values)=>{
           })
           .catch((err)=>{
           message.error('网络错误，请稍后再试 ')
-            console.log(err)
           })
            
 	}
@@ -124,5 +123,76 @@ export const getShowUpdateModalAction = (updateId,updateName)=>{
       updateId,
       updateName
     }
+  }
+}
+export const getChangeNameAction =(payload)=>{
+  return {
+    type:types.CHANGE_NAME,
+    payload
+  }
+}
+export const CloseUpdateModelAction =()=>{
+  return{
+  type:types.CLOSE_UPDATE_MODEL
+  }
+}
+export const getUpdateNameAction =(pid)=>{
+  
+  return (dispatch,getState)=>{
+    //getState方法会返回整个数据
+      const state=getState().get('category')
+        Request({
+            method: 'put',
+            url: 'http://127.0.0.1:3001/category/updateName',
+            data:{
+              id:state.get('updateId'),
+              name:state.get('updateName'),
+              pid:pid,
+              page:state.get('current')
+            }
+          })
+          .then((result)=>{
+            if(result.code===0){
+              dispatch(SetcodeAction(result.data))
+              dispatch(CloseUpdateModelAction())
+              
+            }else{
+              message.error(result.message)
+            }
+          })
+          .catch((err)=>{
+              message.error('网络错误，请稍后再试 ')
+          })
+           
+  }
+}
+//排序
+export const UpdateOrderAction =(pid,id,newOrder)=>{
+  
+  return (dispatch,getState)=>{
+    //getState方法会返回整个数据
+      const state=getState().get('category')
+        Request({
+            method: 'put',
+            url: 'http://127.0.0.1:3001/category/updateOrder',
+            data:{
+              pid:pid,
+              id:id,
+              order:newOrder,
+              page:state.get('current')
+            }
+          })
+          .then((result)=>{
+            if(result.code===0){
+              dispatch(SetcodeAction(result.data))
+              
+            }else{
+              message.error(result.message)
+            }
+          })
+          .catch((err)=>{
+              message.error('网络错误，请稍后再试 ')
+          })
+           
   }
 }

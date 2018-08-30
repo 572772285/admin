@@ -46,5 +46,11 @@ export default((state=defaultState,action)=>{
 			updateName:action.payload.updateName,
 		})
 	}
+	if(action.type===types.CHANGE_NAME){
+		return state.set('updateName',action.payload)
+	}
+	if(action.type===types.CLOSE_UPDATE_MODEL){
+		return state.set('updateModelVisible',false)
+	}
 	return state
 })

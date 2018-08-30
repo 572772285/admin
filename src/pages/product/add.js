@@ -1,14 +1,14 @@
 import React,{ Component } from 'react';
 import Mylayout from '../../common/layout/layout.js'
-class Shop extends Component{
+class Product extends Component{
 
 	render(){
 		return(
-			<Mylayout>Shop!!!!</Mylayout>
+			<Mylayout>Product!!!!</Mylayout>
 		)
 	}
 
 }
 
 
-export default Shop;
+export default Product;

@@ -76,6 +76,9 @@ class CategoryAdd extends Component{
 				            }],
 				          })(
 				            <Select initialValue="0" style={{ width: 300 }}>
+				            {
+				            	//这个value值就是pid
+				            }
 						      <Option value="0">根分类</Option>
 						      {
 						      	this.props.setOneCategory.map((category)=>{

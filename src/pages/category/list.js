@@ -1,6 +1,6 @@
 import React,{ Component } from 'react';
 import Mylayout from '../../common/layout/layout.js'
-import { Breadcrumb ,Button,Table,Divider,InputNumber,Modal } from 'antd';
+import { Breadcrumb ,Button,Table,Divider,InputNumber,Modal,Input } from 'antd';
 import { connect } from 'react-redux';
 import { actionCreater } from './store/index.js'
 import {
@@ -37,6 +37,7 @@ class List extends Component{
 		}
 	}
 	render(){
+		const pid=this.state.pid
 		const columns = [
 		{
 		  title: 'ID',
@@ -52,7 +53,14 @@ class List extends Component{
 		  title: '排序',
 		  dataIndex: 'order',
 		  key: 'order',
-		  
+		  render:(order,record)=>{
+		  	return <InputNumber defaultValue={order} 
+		  		onBlur={(e)=>{
+		  			console.log(pid,record.id,e.target.value)
+		  			this.props.handleOrder(pid,record.id,e.target.value)
+		  		}}
+		  	 />
+		  }
 		},
 		{
 		  title: '操作',
@@ -62,6 +70,7 @@ class List extends Component{
 		      <a 
 		      onClick={()=>{
 		      	this.props.showUpdateModal(record.id,record.name)
+		      	console.log(record.id,record.name)
 		      }
 		      }
 		      >更改分类</a>
@@ -76,10 +85,11 @@ class List extends Component{
 	        key:category.get('_id'),
 	        id:category.get('_id'),
 	        name:category.get('name'),
-	        order:<InputNumber min={1} max={10} defaultValue={category.get('order')} />
+	        order:category.get('order'),
+	        pid:category.get('pid')
 	      }
 	    }).toJS()
-		const pid=this.state.pid
+		
 		return(
 			<Mylayout>
 				<Breadcrumb.Item>分类管理</Breadcrumb.Item>
@@ -115,10 +125,18 @@ class List extends Component{
 			        <Modal
 			          title="修改分类名称"
 			          visible={this.props.updateModelVisible}
-			          onOk={this.props.handleUpdateName}
-			          onCancel={this.props.handleCancelName}
+			          onOk={()=>{
+			          	this.props.handleUpdateName(pid)
+			          }}
+			          onCancel={this.props.handleCloseUpdateModel}
 			        >
-			          <p>内容...</p>
+			        <Input 
+			        	value={this.props.updateName}
+			        	onChange={(e)=>{
+			        		console.log(e.target.value)
+			        		this.props.handelChangeName(e.target.value)
+			        	}}
+			        />
 			        </Modal>
 			</Mylayout>
 
@@ -134,7 +152,9 @@ const mapStateToProps=(state)=>{
     pageSize:state.get('category').get('pageSize'),
     total:state.get('category').get('total'),
     list:state.get('category').get('list'),
-    updateModelVisible:state.get('category').get('updateModelVisible')
+    updateModelVisible:state.get('category').get('updateModelVisible'),
+    updateName:state.get('category').get('updateName'),
+    updateId:state.get('category').get('updateId')
   }
 }
 //把方法映射到组件的props上,这个函数要把dispatch方法穿进去
@@ -146,6 +166,18 @@ const mapDispatchToProps=(dispatch)=>{
     },
     showUpdateModal:(updateId,updateName)=>{
 		dispatch(actionCreater.getShowUpdateModalAction(updateId,updateName));
+	},
+	handelChangeName:(newName)=>{
+		dispatch(actionCreater.getChangeNameAction(newName));
+	},
+	handleUpdateName:(pid)=>{
+		dispatch(actionCreater.getUpdateNameAction(pid));
+	},
+	handleCloseUpdateModel:()=>{
+		dispatch(actionCreater.CloseUpdateModelAction());
+	},
+	handleOrder:(pid,id,newOrder)=>{
+		dispatch(actionCreater.UpdateOrderAction(pid,id,newOrder));
 	}
   }
 }

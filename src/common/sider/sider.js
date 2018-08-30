@@ -23,7 +23,7 @@ class MySider extends Component{
 			            	<NavLink  to='/category'><Icon type="database" />分类管理</NavLink>
 			            </Menu.Item>
 			            <Menu.Item key="4">
-			            	<NavLink  to='/shop'><Icon type="book" />商品管理</NavLink>
+			            	<NavLink  to='/product'><Icon type="book" />商品管理</NavLink>
 			            </Menu.Item>
 			        </Menu>
 			      </Sider>
