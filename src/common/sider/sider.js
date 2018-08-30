@@ -2,7 +2,6 @@ import React,{ Component } from 'react';
 import { Layout, Menu, Icon } from 'antd';
 import {NavLink} from 'react-router-dom';
 import './index.css'
-const { SubMenu } = Menu;
 const { Sider } = Layout;
 class MySider extends Component{
 

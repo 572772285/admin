@@ -1,7 +1,7 @@
 
 import React,{ Component } from 'react';
 import Mylayout from '../../common/layout/layout.js';
-import { Breadcrumb ,Form, Input,Select,Button} from 'antd';
+import { Breadcrumb,Button} from 'antd';
 import {
   Link
 } from 'react-router-dom';
