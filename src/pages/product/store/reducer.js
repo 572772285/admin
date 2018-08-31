@@ -11,7 +11,13 @@ const defaultState=fromJS({
     list:[],//immutable对象
     updateModelVisible:false,
     updateId:'',
-    updateName:""
+    updateName:"",
+
+    categoryId:'',
+    FileList:'',
+    value:'',
+    categoryIdValidateStates:'',
+    categoryIdHelp:''
 })
 //reducer是一个纯函数，输入和输出都固定，里面不能有随机数 Math.random()，时间new Date()
 //reducer负责处理逻辑但不改变数据，数据改变由store负责
@@ -51,6 +57,28 @@ export default((state=defaultState,action)=>{
 	}
 	if(action.type===types.CLOSE_UPDATE_MODEL){
 		return state.set('updateModelVisible',false)
+	}
+
+
+
+	if(action.type===types.SET_CATEGORY){
+		return state.merge({
+			categoryId:action.payload.categoryId,
+			categoryIdValidateStates:'',
+		    categoryIdHelp:''
+		})
+	}
+	if(action.type===types.GET_IMAGE){
+		return state.set('FileList',action.payload)
+	}
+	if(action.type===types.GET_DETAIL_IMAGE){
+		return state.set('value',action.payload)
+	}
+	if(action.type===types.SETSTATE_ERR){
+		return state.merge({
+		    categoryIdValidateStates:'error',
+		    categoryIdHelp:'请选择分类!!'
+		})
 	}
 	return state
 })

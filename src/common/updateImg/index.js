@@ -26,7 +26,12 @@ class UploadImg extends React.Component {
   }
 
   handleChange({ fileList }){
-    this.setState({ fileList })
+    console.log(fileList)
+    this.setState({ fileList },()=>{
+      this.props.getFileList(fileList.map((file)=>{
+        return file.response
+      }).join(','))
+    })
   }
 
   render() {
@@ -45,6 +50,7 @@ class UploadImg extends React.Component {
           fileList={fileList}
           onPreview={this.handlePreview}
           onChange={this.handleChange}
+          withCredentials={ true }
         >
           {fileList.length >= this.props.max ? null : uploadButton}
         </Upload>

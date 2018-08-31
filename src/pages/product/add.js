@@ -1,10 +1,12 @@
 import React,{ Component } from 'react';
 import Mylayout from '../../common/layout/layout.js'
-import { Breadcrumb ,Form, Input,Select,Button,InputNumber} from 'antd';
+import { Breadcrumb ,Form, Input,Button,InputNumber} from 'antd';
 import { connect } from 'react-redux';
 import { actionCreater } from './store/index.js';
 import CategorySelector from './category-selector.js';
 import UploadImg from '../../common/updateImg/index.js';
+import MySimditor from '../../common/rich-eiditor/index.js';
+import '../../common/rich-eiditor/index.css'
 const FormItem = Form.Item;
 class CategoryAdd extends Component{
 	constructor(props){
@@ -14,9 +16,8 @@ class CategoryAdd extends Component{
   handleSubmit(e){
     e.preventDefault();
     this.props.form.validateFields((err,values) => {
-      if (!err) {
-          this.props.handleAdd(values)
-        }
+      	console.log(values)
+          this.props.handleAdd(err,values)
       })
   }
 	render(){
@@ -24,7 +25,7 @@ class CategoryAdd extends Component{
 		const formItemLayout = {
 	      	labelCol: {
 	       		xs: { span: 24 },
-	      	  	sm: { span: 8 },
+	      	  	sm: { span: 2 },
 	    	},
 	    	wrapperCol: {
 	     	   	xs: { span: 24 },
@@ -34,7 +35,7 @@ class CategoryAdd extends Component{
 	    const tailFormItemLayout = {
 		    wrapperCol: {
 		        xs: {
-		          span: 24,
+		          span: 10,
 		          offset: 0,
 		        },
 		        sm: {
@@ -69,10 +70,13 @@ class CategoryAdd extends Component{
 				        <FormItem
 				          {...formItemLayout}
 				          label="所属分类"
+				          required={true}
+				          validateStatus={ this.props.categoryIdValidateStates }
+				          help={ this.props.categoryIdHelp }
 				        >
 				        	<CategorySelector
-				        		getCategoryId={(pid,id)=>{
-				        			console.log(pid,id)
+				        		getCategoryId={(parentCategoryId,categoryId)=>{
+				        			this.props.handleCategory(parentCategoryId,categoryId)
 				        		}}
 				        	 />
 
@@ -94,7 +98,25 @@ class CategoryAdd extends Component{
       							parser={value => value.replace('件', '')}					            	
 				            />
 				          )}
-				        </FormItem>	
+				        </FormItem>
+				        <FormItem
+				          {...formItemLayout}
+				          label="商品价格"
+				        >
+				          {getFieldDecorator('price', {
+				            rules: [
+				            {
+				              required: true, message: '请输入商品价格',
+				            }],
+				          })(
+				            <InputNumber 
+				            	style={{width:300}}
+				            	min={0}
+								formatter={value => `${value}元`}
+      							parser={value => value.replace('元', '')}					            	
+				            />
+				          )}
+				        </FormItem>		
 				        <FormItem
 				          {...formItemLayout}
 				          label="商品描述"
@@ -115,15 +137,28 @@ class CategoryAdd extends Component{
 				          label="商品图片"
 				        >
 						<UploadImg 
-							action={null}
-							max={1}
+							action={ "http://127.0.0.1:3001/product/loadimg" }
+							max={3}
+							getFileList={
+								(FileList)=>{
+									this.props.handleImgage(FileList)
+								}
+							}
 						/>
 				        </FormItem>	
 				        <FormItem
 				          {...formItemLayout}
 				          label="商品详情"
 				        >
-			
+						<MySimditor 
+						url={ "http://127.0.0.1:3001/product/upload" }
+						getRichEditorValue={
+							(value)=>{
+								// console.log(value)
+								this.props.handleDetailImgage(value)
+							}
+						}
+						/>
 				        </FormItem>
 				        <FormItem {...tailFormItemLayout}>
 				        	<Button 
@@ -146,15 +181,24 @@ class CategoryAdd extends Component{
 const CategoryADD=Form.create()(CategoryAdd);
 const mapStateToProps=(state)=>{
   return {
-    isAddFetching:state.get('category').get('isAddFetching'),
-    setOneCategory:state.get('category').get('setOneCategory')
+    categoryIdValidateStates:state.get('product').get('categoryIdValidateStates'),
+    categoryIdHelp:state.get('product').get('categoryIdHelp')
   }
 }
 const mapDispatchToProps=(dispatch)=>{
   return {
-    handleAdd(values){
-      const action=actionCreater.getAddcatogoryAction(values)
+    handleAdd(err,values){
+      const action=actionCreater.getAddcatogoryAction(err,values)
       dispatch(action)
+    },
+    handleCategory(parentCategoryId,categoryId){
+    	dispatch(actionCreater.getSetCategoryAction(parentCategoryId,categoryId))
+    },
+    handleImgage(FileList){
+    	dispatch(actionCreater.getImgageAction(FileList))
+    },
+    handleDetailImgage(value){
+    	dispatch(actionCreater.getDetailImgageAction(value))
     },
     getOneCategory(){
     	dispatch(actionCreater.getOneCategoryAction())

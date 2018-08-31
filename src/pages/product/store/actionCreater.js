@@ -1,6 +1,24 @@
 import * as types from './actionTypes.js';
 import { message } from 'antd';
 import { Request } from '../../../until/'
+
+
+export const getSetCategoryAction=(parentCategoryId,categoryId)=>({
+  type:types.SET_CATEGORY,
+  payload:{
+    parentCategoryId,
+    categoryId
+  }
+})
+export const getImgageAction=(FileList)=>({
+  type:types.GET_IMAGE,
+  payload:FileList
+})
+export const getDetailImgageAction=(value)=>({
+  type:types.GET_DETAIL_IMAGE,
+  payload:value
+})
+
 //使用redux中间件后return可以接受函数
 const AddRequsetAction=()=>{
   return ({
@@ -36,19 +54,37 @@ const SetcodeAction=(payload)=>{
     payload
   })
 }
-export const getAddcatogoryAction=(values)=>{
+const SetHlepstate=()=>({
+    type:types.SETSTATE_ERR
+})
+export const getAddcatogoryAction=(err,values)=>{
 	//返回一个函数
-	return (dispatch)=>{
+	return (dispatch,getState)=>{
+    const state=getState().get('product')
+    const categoryId=state.get('categoryId')
+    if(!categoryId){
+      dispatch(SetHlepstate())
+      return
+    }
+    if(err){
+      return
+    }
     dispatch(AddRequsetAction())
         Request({
             method:'post',
             url: 'http://127.0.0.1:3001/category',
-            data:values
+            data:{
+              ...values,
+              categoryId:categoryId,
+              FileList:state.get('FileList'),
+              value:state.get('value')
+            }
           })
           .then((result)=>{
             if(result.code===0){
+              console.log(result)
               if(result.data){
-                dispatch(SetOneCategory(result.data))
+                dispatch(SetcodeAction(result.data))
               }
               message.success('添加分类成功')
             }else if(result.code===1){
