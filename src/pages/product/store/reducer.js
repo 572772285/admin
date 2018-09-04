@@ -2,6 +2,8 @@ import { fromJS } from 'immutable'
 import * as types from './actionTypes.js'
 //用fromjs包装immutable
 const defaultState=fromJS({
+	parentCategoryId:'',
+	categoryId:'',
 	isAddFetching:false,
 	setOneCategory:[],
 	isPageFetching:false,
@@ -12,21 +14,26 @@ const defaultState=fromJS({
     updateModelVisible:false,
     updateId:'',
     updateName:"",
-
-    categoryId:'',
+    
     FileList:'',
     value:'',
     categoryIdValidateStates:'',
-    categoryIdHelp:''
+    categoryIdHelp:'',
+
+    name:'',
+    price:'',
+    stock:'',
+    description:'',
+    keyword:''
 })
 //reducer是一个纯函数，输入和输出都固定，里面不能有随机数 Math.random()，时间new Date()
 //reducer负责处理逻辑但不改变数据，数据改变由store负责
 export default((state=defaultState,action)=>{
 	if(action.type===types.ADD_VALUE){
-		return state.set('isFetching',true)
+		return state.set('isAddFetching',true)
 	}
 	if(action.type===types.ADD_DONE){
-		return state.set('isFetching',false)
+		return state.set('isAddFetching',false)
 	}
 	if(action.type===types.SET_ONE_CATEGORY){
 		return state.set('setOneCategory',fromJS(action.payload))
@@ -42,6 +49,7 @@ export default((state=defaultState,action)=>{
 			current:action.payload.current,
 			pageSize:action.payload.pageSize,
 			total:action.payload.total,
+			keyword:action.payload.keyword||'',
 			list:fromJS(action.payload.list)
 		})
 	}
@@ -63,11 +71,14 @@ export default((state=defaultState,action)=>{
 
 	if(action.type===types.SET_CATEGORY){
 		return state.merge({
+			parentCategoryId:action.payload.parentCategoryId,
 			categoryId:action.payload.categoryId,
 			categoryIdValidateStates:'',
 		    categoryIdHelp:''
 		})
+
 	}
+
 	if(action.type===types.GET_IMAGE){
 		return state.set('FileList',action.payload)
 	}
@@ -78,6 +89,18 @@ export default((state=defaultState,action)=>{
 		return state.merge({
 		    categoryIdValidateStates:'error',
 		    categoryIdHelp:'请选择分类!!'
+		})
+	}
+	if(action.type===types.SETPRODUCT_DETAIL){
+		return state.merge({
+		    	parentCategoryId:action.payload.categoryId.pid,
+				categoryId:action.payload.categoryId._id,
+				FileList:action.payload.FileList,
+				value:action.payload.value,
+			    name:action.payload.name,
+			    price:action.payload.price,
+			    stock:action.payload.stock,
+			    description:action.payload.description
 		})
 	}
 	return state

@@ -7,11 +7,11 @@ import CategorySelector from './category-selector.js';
 import UploadImg from '../../common/updateImg/index.js';
 import MySimditor from '../../common/rich-eiditor/index.js';
 import '../../common/rich-eiditor/index.css'
+import './detail.css'
 const FormItem = Form.Item;
-class CategoryAdd extends Component{
+class ProductDatil extends Component{
 	constructor(props){
 		super(props)
-		this.handleSubmit=this.handleSubmit.bind(this)
 		this.state={
 			productId:this.props.match.params.id
 		}
@@ -19,17 +19,10 @@ class CategoryAdd extends Component{
 	}
 	componentDidMount(){
 	    if(this.state.productId){
-	    	this.props.handleEditProduct(this.state.productId)
+	    	this.props.handleProductDetail(this.state.productId)
 	    }
 	}
-  handleSubmit(e){
-    e.preventDefault();
-    this.props.form.validateFields((err,values) => {
-      		console.log(values)
-      		values.id=this.state.productId
-          this.props.handleAdd(err,values)
-      })
-  }
+
 	render(){
 		const {
 
@@ -43,16 +36,13 @@ class CategoryAdd extends Component{
 		description
 		}=this.props
 		console.log(FileList)
-		let fileLists=[]
+		let imgBox=''
 		if(FileList){
-			fileLists=FileList.split(',').map((img,index)=>({
-				uid:index,
-				state:'done',
-				url:img,
-				response:FileList
-			}))
+			imgBox=FileList.split(',').map((img,index)=>(
+				<li key={index}>
+					<img src={img} />
+				</li>))
 		}
-		console.log(fileLists)
 
 		const { getFieldDecorator } = this.props.form;
 		const formItemLayout = {
@@ -84,11 +74,7 @@ class CategoryAdd extends Component{
 					<Breadcrumb>
 						<Breadcrumb.Item>商品管理</Breadcrumb.Item>
 						<Breadcrumb.Item>
-							{
-								this.state.productId
-								? '编辑商品'
-								: '添加商品'
-							}
+							商品详情
 						</Breadcrumb.Item>
 					</Breadcrumb>
 					<Form>
@@ -96,30 +82,19 @@ class CategoryAdd extends Component{
 				          {...formItemLayout}
 				          label="商品名称"
 				        >
-				          {getFieldDecorator('name', {
-				            rules: [{
-				              required: true, message: '填写商品名称!',
-				            }],
-				            initialValue:name
-				          })(
 				            <Input style={{ width: 600 }}
-				            placeholder="请输入商品名称"
+				            disabled={true}
+				            defaultValue={name}
 				            />
-				          )}
 				        </FormItem>
 				        <FormItem
 				          {...formItemLayout}
 				          label="所属分类"
-				          required={true}
-				          validateStatus={ this.props.categoryIdValidateStates }
-				          help={ this.props.categoryIdHelp }
 				        >
 				        	<CategorySelector
 				        		parentCategoryId={parentCategoryId}
 				        		categoryId={categoryId}
-				        		getCategoryId={(parentCategoryId,categoryId)=>{
-				        			this.props.handleCategory(parentCategoryId,categoryId)
-				        		}}
+				        		disabled={true}
 				        	 />
 
 				        </FormItem>
@@ -127,94 +102,48 @@ class CategoryAdd extends Component{
 				          {...formItemLayout}
 				          label="商品库存"
 				        >
-				          {getFieldDecorator('stock', {
-				            rules: [
-				            {
-				              required: true, message: '请输入商品库存',
-				            }],
-				            initialValue:stock
-				          })(
 				            <InputNumber 
+				            	disabled={true}
 				            	style={{width:300}}
-				            	min={0}
+				            	value={stock}
 								formatter={value => `${value}件`}
       							parser={value => value.replace('件', '')}					            	
 				            />
-				          )}
 				        </FormItem>
 				        <FormItem
 				          {...formItemLayout}
 				          label="商品价格"
 				        >
-				          {getFieldDecorator('price', {
-				            rules: [
-				            {
-				              required: true, message: '请输入商品价格',
-				            }],
-				            initialValue:price
-				          })(
 				            <InputNumber 
 				            	style={{width:300}}
-				            	min={0}
+				            	value={ price }
+				            	disabled={true}
 								formatter={value => `${value}元`}
       							parser={value => value.replace('元', '')}					            	
 				            />
-				          )}
 				        </FormItem>		
 				        <FormItem
 				          {...formItemLayout}
 				          label="商品描述"
 				        >
-				          {getFieldDecorator('description', {
-				            rules: [
-				            {
-				              required: true, message: '请输入商品描述',
-				            }],
-				            initialValue:description
-				          })(
 				            <Input 
-				            	placeholder="商品描述"
+				            	disabled={true}
+				            	defaultValue={description}
 				            />
-				          )}
 				        </FormItem>
 				        <FormItem
 				          {...formItemLayout}
 				          label="商品图片"
 				        >
-						<UploadImg 
-							action={ "http://127.0.0.1:3001/product/loadimg" }
-							max={3}
-							fileLists={fileLists}
-							getFileList={
-								(FileList)=>{
-									this.props.handleImgage(FileList)
-								}
-							}
-						/>
+				        	<ul className="imgBox">
+				        		{imgBox}
+				        	</ul>
 				        </FormItem>	
 				        <FormItem
 				          {...formItemLayout}
 				          label="商品详情"
 				        >
-						<MySimditor 
-						url={ "http://127.0.0.1:3001/product/upload" }
-						value={value}
-						getRichEditorValue={
-							(value)=>{
-								// console.log(value)
-								this.props.handleDetailImgage(value)
-							}
-						}
-						/>
-				        </FormItem>
-				        <FormItem {...tailFormItemLayout}>
-				        	<Button 
-				          		type="primary"
-				          		onClick={this.handleSubmit}
-				          		loading={this.props.isAddFetching}
-				          	>
-				          	提交
-				        	</Button>
+				          <div dangerouslySetInnerHTML={{ __html:value }}></div>
 				        </FormItem>
 					</Form>
 
@@ -225,12 +154,9 @@ class CategoryAdd extends Component{
 	}
 
 }
-const CategoryADD=Form.create()(CategoryAdd);
+const ProductDATIL=Form.create()(ProductDatil);
 const mapStateToProps=(state)=>{
   return {
-    categoryIdValidateStates:state.get('product').get('categoryIdValidateStates'),
-    categoryIdHelp:state.get('product').get('categoryIdHelp'),
-    isAddFetching:state.get('product').get('isAddFetching'),
     name:state.get('product').get('name'),
 	parentCategoryId:state.get('product').get('parentCategoryId'),
 	categoryId:state.get('product').get('categoryId'),
@@ -243,27 +169,11 @@ const mapStateToProps=(state)=>{
 }
 const mapDispatchToProps=(dispatch)=>{
   return {
-    handleAdd(err,values){
-      const action=actionCreater.getAddcatogoryAction(err,values)
-      dispatch(action)
-    },
-    handleCategory(parentCategoryId,categoryId){
-    	dispatch(actionCreater.getSetCategoryAction(parentCategoryId,categoryId))
-    },
-    handleImgage(FileList){
-    	dispatch(actionCreater.getImgageAction(FileList))
-    },
-    handleDetailImgage(value){
-    	dispatch(actionCreater.getDetailImgageAction(value))
-    },
-    getOneCategory(){
-    	dispatch(actionCreater.getOneCategoryAction())
-    },
-    handleEditProduct(productId){
+    handleProductDetail(productId){
     	dispatch(actionCreater.getProductDetailAction(productId))
     }
   }
 }
 
 
-export default connect(mapStateToProps,mapDispatchToProps)(CategoryADD);
+export default connect(mapStateToProps,mapDispatchToProps)(ProductDATIL);

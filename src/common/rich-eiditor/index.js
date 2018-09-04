@@ -5,6 +5,9 @@ import $ from 'jquery'
 class MySimditor extends Component{
 	constructor(props){
 		super(props)
+		this.state={
+			isLoad:false
+		}
 		this.toolbar=[
 			  'title',
 			  'bold',
@@ -46,8 +49,16 @@ class MySimditor extends Component{
 			this.props.getRichEditorValue(this.editor.getValue())
 		})
 	}
+	componentDidUpdate(){
+		console.log(this.props.value)
+		if(this.props.value&&!this.state.isLoad){
+			this.editor.setValue(this.props.value)
+			this.setState({
+				isLoad:true
+			})
+		}
+	}
 	render(){
-		console.log($)
 		return (
 				<div>
 					<textarea  ref={(textarea)=>{this.textarea=textarea}}></textarea>

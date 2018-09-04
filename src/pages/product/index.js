@@ -5,13 +5,15 @@ import {
 } from 'react-router-dom'
 import ProductList from './list.js'
 import ProductAdd from './add.js'
+import Productchakan from './detail.js'
 class Product extends Component{
 
 	render(){
 		return(
 			<Switch>
-				<Route path="/product/add" component={ ProductAdd } />
-				<Route path="/product/:pid?" component={ ProductList } />
+				<Route path="/product/add/:id?" component={ ProductAdd } />
+				<Route path="/product/detail/:id" component={ Productchakan } />
+				<Route path="/product/" component={ ProductList } />
 			</Switch>
 		)
 	}

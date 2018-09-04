@@ -37,7 +37,7 @@ class App extends React.Component{
       }
     }
     return(
-    	<Router>
+    	<Router forceRefresh={true}>
     		<div className='App'>
         <Switch>
           <ProtectedRouter exact path="/" component={ Home }/>

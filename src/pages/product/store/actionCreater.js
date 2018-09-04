@@ -4,11 +4,12 @@ import { Request } from '../../../until/'
 
 
 export const getSetCategoryAction=(parentCategoryId,categoryId)=>({
-  type:types.SET_CATEGORY,
-  payload:{
-    parentCategoryId,
-    categoryId
-  }
+      type:types.SET_CATEGORY,
+      payload:{
+        parentCategoryId,
+        categoryId
+      }
+
 })
 export const getImgageAction=(FileList)=>({
   type:types.GET_IMAGE,
@@ -69,10 +70,16 @@ export const getAddcatogoryAction=(err,values)=>{
     if(err){
       return
     }
+    //新增处理
+    let method='post'
+    //编辑处理
+    if(values.id){
+      method='put'
+    }
     dispatch(AddRequsetAction())
         Request({
-            method:'post',
-            url: 'http://127.0.0.1:3001/category',
+            method:method,
+            url: 'http://127.0.0.1:3001/product/shopmall',
             data:{
               ...values,
               categoryId:categoryId,
@@ -81,16 +88,13 @@ export const getAddcatogoryAction=(err,values)=>{
             }
           })
           .then((result)=>{
+
             if(result.code===0){
-              console.log(result)
-              if(result.data){
-                dispatch(SetcodeAction(result.data))
-              }
-              message.success('添加分类成功')
+            message.success('添加分类成功')
+              window.location.href='/product'
             }else if(result.code===1){
               message.error(result.message)
             }
-            dispatch(AddDownAction())
           })
           .catch((err)=>{
           message.error('网络错误，请稍后再试 ')
@@ -123,16 +127,15 @@ export const getOneCategoryAction=()=>{
           })
   }
 }
-export const getPageAction=(pid,page)=>{
+export const getPageAction=(page)=>{
   //返回一个函数
   return (dispatch)=>{
     dispatch(GetPageRequestAction())
 
         Request({
             method: 'get',
-            url: 'http://127.0.0.1:3001/category',
+            url: 'http://127.0.0.1:3001/product',
             data:{
-              pid:pid,
               page:page
             }
           })
@@ -203,16 +206,15 @@ export const getUpdateNameAction =(pid)=>{
   }
 }
 //排序
-export const UpdateOrderAction =(pid,id,newOrder)=>{
+export const UpdateOrderAction =(id,newOrder)=>{
   
   return (dispatch,getState)=>{
     //getState方法会返回整个数据
-      const state=getState().get('category')
+      const state=getState().get('product')
         Request({
             method: 'put',
-            url: 'http://127.0.0.1:3001/category/updateOrder',
+            url: 'http://127.0.0.1:3001/product/updateOrder',
             data:{
-              pid:pid,
               id:id,
               order:newOrder,
               page:state.get('current')
@@ -225,6 +227,91 @@ export const UpdateOrderAction =(pid,id,newOrder)=>{
             }else{
               message.error(result.message)
             }
+          })
+          .catch((err)=>{
+              message.error('网络错误，请稍后再试 ')
+          })
+           
+  }
+}
+
+//上下架
+export const handleStatusAction =(id,newStatus)=>{
+  
+  return (dispatch,getState)=>{
+    //getState方法会返回整个数据
+      const state=getState().get('product')
+        Request({
+            method: 'put',
+            url: 'http://127.0.0.1:3001/product/getStatus',
+            data:{
+              id:id,
+              status:newStatus,
+              page:state.get('current')
+            }
+          })
+          .then((result)=>{
+            if(result.code===0){
+              message.success(result.message)
+            }else{
+              dispatch(SetcodeAction(result.data))
+              message.error(result.message)
+            }
+          })
+          .catch((err)=>{
+              message.error('网络错误，请稍后再试 ')
+          })
+           
+  }
+}
+const setProductDetail=(payload)=>{
+  return({
+    type:types.SETPRODUCT_DETAIL,
+    payload
+  })
+}
+//编辑
+export const getProductDetailAction =(productId)=>{
+  
+  return (dispatch)=>{
+        Request({
+            method: 'get',
+            url: 'http://127.0.0.1:3001/product/detail',
+            data:{
+              id:productId
+            }
+          })
+          .then((result)=>{
+            if(result.code===0){
+              console.log(result)
+              dispatch(setProductDetail(result.data))
+            }
+            
+          })
+          .catch((err)=>{
+              message.error('网络错误，请稍后再试 ')
+          })
+           
+  }
+}
+//查询
+export const handleSearchAction =(keyword,page=1)=>{
+  
+  return (dispatch)=>{
+        Request({
+            method: 'get',
+            url: 'http://127.0.0.1:3001/product/search',
+            data:{
+              keyword:keyword,
+              page:page
+            }
+          })
+          .then((result)=>{
+            if(result.code===0){
+              console.log(result)
+              dispatch(SetcodeAction(result.data))
+            }
+            
           })
           .catch((err)=>{
               message.error('网络错误，请稍后再试 ')

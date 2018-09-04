@@ -11,4 +11,6 @@ export const SET_CATEGORY='product/SET_CATEGORY';
 export const GET_IMAGE='product/GET_IMAGE';
 export const GET_DETAIL_IMAGE='product/GET_DETAIL_IMAGE';
 export const SETSTATE_ERR='product/SETSTATE_ERR';
+export const SETPRODUCT_DETAIL='product/SETPRODUCT_DETAIL';
+
 
