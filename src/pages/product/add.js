@@ -180,6 +180,9 @@ class CategoryAdd extends Component{
 				        <FormItem
 				          {...formItemLayout}
 				          label="商品图片"
+				          required={true}
+				          validateStatus={ this.props.imagesValidateStates }
+				          help={ this.props.imagesHelp }
 				        >
 						<UploadImg 
 							action={ "http://127.0.0.1:3001/product/loadimg" }
@@ -230,6 +233,8 @@ const mapStateToProps=(state)=>{
   return {
     categoryIdValidateStates:state.get('product').get('categoryIdValidateStates'),
     categoryIdHelp:state.get('product').get('categoryIdHelp'),
+    imagesValidateStates:state.get('product').get('imagesValidateStates'),
+    imagesHelp:state.get('product').get('imagesHelp'),
     isAddFetching:state.get('product').get('isAddFetching'),
     name:state.get('product').get('name'),
 	parentCategoryId:state.get('product').get('parentCategoryId'),

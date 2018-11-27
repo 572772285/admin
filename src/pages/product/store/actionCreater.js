@@ -58,14 +58,24 @@ const SetcodeAction=(payload)=>{
 const SetHlepstate=()=>({
     type:types.SETSTATE_ERR
 })
+const SetErrorImg=()=>({
+    type:types.ERRORIMG
+})
 export const getAddcatogoryAction=(err,values)=>{
 	//返回一个函数
 	return (dispatch,getState)=>{
     const state=getState().get('product')
     const categoryId=state.get('categoryId')
+
+    let isError=false;
+    const image=state.get('FileList')
     if(!categoryId){
       dispatch(SetHlepstate())
-      return
+      isError=true;
+    }
+    if(!image){
+      dispatch(SetErrorImg())
+      isError=true;
     }
     if(err){
       return

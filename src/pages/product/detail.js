@@ -1,11 +1,9 @@
 import React,{ Component } from 'react';
 import Mylayout from '../../common/layout/layout.js'
-import { Breadcrumb ,Form, Input,Button,InputNumber} from 'antd';
+import { Breadcrumb ,Form, Input,InputNumber} from 'antd';
 import { connect } from 'react-redux';
 import { actionCreater } from './store/index.js';
 import CategorySelector from './category-selector.js';
-import UploadImg from '../../common/updateImg/index.js';
-import MySimditor from '../../common/rich-eiditor/index.js';
 import '../../common/rich-eiditor/index.css'
 import './detail.css'
 const FormItem = Form.Item;
@@ -44,7 +42,7 @@ class ProductDatil extends Component{
 				</li>))
 		}
 
-		const { getFieldDecorator } = this.props.form;
+		// const { getFieldDecorator } = this.props.form;
 		const formItemLayout = {
 	      	labelCol: {
 	       		xs: { span: 24 },
@@ -55,18 +53,18 @@ class ProductDatil extends Component{
 	     	   	sm: { span: 16 },
 	    	},
 	    };
-	    const tailFormItemLayout = {
-		    wrapperCol: {
-		        xs: {
-		          span: 10,
-		          offset: 0,
-		        },
-		        sm: {
-		          span: 16,
-		          offset: 8,
-		       	},
-		    },
-	    };
+	    // const tailFormItemLayout = {
+		   //  wrapperCol: {
+		   //      xs: {
+		   //        span: 10,
+		   //        offset: 0,
+		   //      },
+		   //      sm: {
+		   //        span: 16,
+		   //        offset: 8,
+		   //     	},
+		   //  },
+	    // };
 		return(
 			
 			<Mylayout>
@@ -171,7 +169,7 @@ const mapDispatchToProps=(dispatch)=>{
   return {
     handleProductDetail(productId){
     	dispatch(actionCreater.getProductDetailAction(productId))
-    }
+    },
   }
 }
 

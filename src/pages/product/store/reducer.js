@@ -16,6 +16,8 @@ const defaultState=fromJS({
     updateName:"",
     
     FileList:'',
+    imagesValidateStates:'',
+    imagesHelp:'',
     value:'',
     categoryIdValidateStates:'',
     categoryIdHelp:'',
@@ -80,7 +82,11 @@ export default((state=defaultState,action)=>{
 	}
 
 	if(action.type===types.GET_IMAGE){
-		return state.set('FileList',action.payload)
+		return state.merge({
+			FileList:action.payload,
+			imagesValidateStates:'',
+		    imagesHelp:''
+		})
 	}
 	if(action.type===types.GET_DETAIL_IMAGE){
 		return state.set('value',action.payload)
@@ -89,6 +95,13 @@ export default((state=defaultState,action)=>{
 		return state.merge({
 		    categoryIdValidateStates:'error',
 		    categoryIdHelp:'请选择分类!!'
+		})
+	}
+	//上传图片要求
+	if(action.type===types.ERRORIMG){
+		return state.merge({
+		    imagesValidateStates:'error',
+		    imagesHelp:'请上传图片!!'
 		})
 	}
 	if(action.type===types.SETPRODUCT_DETAIL){

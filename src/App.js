@@ -12,12 +12,11 @@ import Login from './pages/login/index.js'
 import Home from './pages/home/index.js'
 import User from './pages/user/index.js'
 import Product from './pages/product/index.js'
+import Order from './pages/order/index.js'
 import Category from './pages/category/index.js'
 import { getUserName } from './until/index.js'
 import  ErrorPage from './pages/errorPage/index.js'
 class App extends React.Component{
-
-	
   render(){
   const ProtectedRouter = ({component:Component,...rest})=>(
       <Route 
@@ -44,6 +43,7 @@ class App extends React.Component{
           <ProtectedRouter path="/user" component={ User }/>
           <ProtectedRouter path="/product" component={ Product }/>
           <ProtectedRouter path="/category" component={ Category }/>
+          <ProtectedRouter path="/order" component={ Order }/>
           <LoginRouter path="/login" component={ Login }/>
           <Route component={ ErrorPage } />
     		</Switch>

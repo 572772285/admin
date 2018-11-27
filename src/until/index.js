@@ -10,7 +10,7 @@ export const Request=(options)=>{
             withCredentials: true
 		}
 		//如果是get就给你添加一个params属性，如果是post就给你添加data属性
-		switch(params.method.toUpperCase()){
+		switch(params.method.toUpperCase()){//首先设置表达式 n（通常是一个变量）。随后表达式的值会与结构中的每个 case 的值做比较
 			//如果是get
 			case 'GET':
 			case 'DELETE':
